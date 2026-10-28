@@ -1,0 +1,30 @@
+name: brendhouse
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: brendhouse
+      POSTGRES_USER: brendhouse
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
+    ports: ["127.0.0.1:5432:5432"]
+    volumes: ["postgres:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U brendhouse -d brendhouse"]
+      interval: 5s
+      retries: 12
+  redis:
+    image: redis:7-alpine
+    ports: ["127.0.0.1:6379:6379"]
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes: ["redis:/data"]
+  meilisearch:
+    image: getmeili/meilisearch:v1.15
+    environment:
+      MEILI_MASTER_KEY: ${MEILI_MASTER_KEY:?Set MEILI_MASTER_KEY}
+      MEILI_ENV: development
+    ports: ["127.0.0.1:7700:7700"]
+    volumes: ["search:/meili_data"]
+volumes:
+  postgres:
+  redis:
+  search:

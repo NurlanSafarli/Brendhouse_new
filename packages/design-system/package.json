@@ -1,0 +1,1 @@
+{"name":"@brendhouse/design-system","private":true,"exports":{".":"./src/index.tsx","./tokens.css":"./src/tokens.css"},"dependencies":{"@radix-ui/react-dialog":"^1.1.0","@radix-ui/react-accordion":"^1.2.0","class-variance-authority":"^0.7.1","clsx":"^2.1.1","tailwind-merge":"^3.0.0","lucide-react":"^0.468.0"},"peerDependencies":{"react":"^19.0.0","react-dom":"^19.0.0"}}

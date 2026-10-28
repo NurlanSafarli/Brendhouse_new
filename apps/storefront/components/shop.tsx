@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { CartLink } from "./cart-view";
 import { useState } from "react";
 import { useWishlist, toggleWishlist } from "../lib/wishlist";
 import {
@@ -33,6 +34,7 @@ export function ShopHeader() {
             ))}
           </nav>
           <div className="row header-actions">
+            <CartLink />
             <Link href="/axtaris" aria-label="Axtarış">
               <Search size={21} />
             </Link>

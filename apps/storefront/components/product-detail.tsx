@@ -1,4 +1,5 @@
 "use client";
+import { addCart } from "../lib/cart";
 import { useState } from "react";
 import Link from "next/link";
 import type { CatalogProduct } from "@brendhouse/contracts";
@@ -12,6 +13,7 @@ import {
 import { Favorite, ImageBlock, Money } from "./shop";
 import { confirmedPolicy } from "../lib/policy";
 export function ProductDetail({ product }: { product: CatalogProduct }) {
+  const [message, setMessage] = useState("");
   const [color, setColor] = useState(product.variants[0].color);
   const [size, setSize] = useState("");
   const variant = product.variants.find(
@@ -40,6 +42,11 @@ export function ProductDetail({ product }: { product: CatalogProduct }) {
         </div>
         <section className="product-information">
           <p className="eyebrow">{product.category}</p>
+          {product.developmentOnly && (
+            <p className="unverified-note">
+              Məhsul məlumatları təsdiqlənməyib.
+            </p>
+          )}
           <h1>{product.title}</h1>
           <div className="detail-price">
             <strong>
@@ -120,9 +127,36 @@ export function ProductDetail({ product }: { product: CatalogProduct }) {
             })}
           </div>
           <div className="purchase-area">
-            <Button disabled className="purchase-button">
+            <Button
+              disabled={!variant || variant.available === 0}
+              className="purchase-button"
+              onClick={() => {
+                if (!variant) return;
+                try {
+                  addCart({
+                    variantId: variant.id,
+                    slug: product.slug,
+                    title: product.title,
+                    color: variant.color,
+                    size: variant.size,
+                    price: variant.price,
+                    oldPrice: variant.oldPrice,
+                    quantity: 1,
+                    limit: variant.available,
+                    developmentOnly: product.developmentOnly,
+                  });
+                  setMessage("Məhsul səbətə əlavə edildi.");
+                } catch {
+                  setMessage("Səbəti saxlamaq mümkün olmadı.");
+                }
+              }}
+            >
               {!size ? "Ölçü seçin" : "Səbətə əlavə et →"}
             </Button>
+            <p role="status">{message}</p>
+            <Link href="/sebet" className="choose-size">
+              Səbətə bax →
+            </Link>
             <div className="trust-block">
               {confirmedPolicy.doorInspection && (
                 <TrustItem>Qapıda yoxla, sonra ödə</TrustItem>

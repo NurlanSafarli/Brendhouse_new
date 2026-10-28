@@ -19,9 +19,9 @@ export function validateRow(value: unknown): value is ImportRow {
   const r = value as ImportRow;
   return (
     typeof r.sourceId === "string" &&
-    r.sourceId.length > 0 &&
+    r.sourceId.trim().length > 0 &&
     typeof r.code === "string" &&
-    r.code.length > 0 &&
+    r.code.trim().length > 0 &&
     typeof r.slug === "string" &&
     /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(r.slug) &&
     typeof r.title === "string" &&
@@ -33,16 +33,26 @@ export function validateRow(value: unknown): value is ImportRow {
         v &&
         validEan13(v.barcode) &&
         typeof v.color === "string" &&
-        !!v.color &&
+        !!v.color.trim() &&
         typeof v.size === "string" &&
-        !!v.size &&
+        !!v.size.trim() &&
         Number.isSafeInteger(v.price) &&
-        v.price >= 0,
+        v.price >= 0 &&
+        v.price <= 2147483647,
     ) &&
     new Set(r.variants.map((v) => v.barcode)).size === r.variants.length &&
     new Set(r.variants.map((v) => `${v.color}\u0000${v.size}`)).size ===
       r.variants.length
   );
+}
+/** Explicit allowlist: external JSON must never supply IDs or relational fields. */
+export function variantData(variant: ImportRow["variants"][number]) {
+  return {
+    barcode: variant.barcode,
+    color: variant.color,
+    size: variant.size,
+    price: variant.price,
+  };
 }
 /** Imports are quarantined as draft/unverified. They cannot retain prior approval. */
 export async function importCatalog(
@@ -64,6 +74,10 @@ export async function importCatalog(
     }
     try {
       await db.$transaction(async (tx) => {
+        const existing = await tx.product.findUnique({
+          where: { source_sourceId: { source, sourceId: row.sourceId } },
+          select: { developmentOnly: true },
+        });
         const product = await tx.product.upsert({
           where: { source_sourceId: { source, sourceId: row.sourceId } },
           create: {
@@ -80,7 +94,8 @@ export async function importCatalog(
             publication: "DRAFT",
             verifiedBy: null,
             verifiedAt: null,
-            developmentOnly,
+            developmentOnly:
+              developmentOnly || existing?.developmentOnly === true,
           },
         });
         await tx.productTranslation.upsert({
@@ -97,8 +112,8 @@ export async function importCatalog(
                 size: variant.size,
               },
             },
-            create: { productId: product.id, ...variant },
-            update: variant,
+            create: { productId: product.id, ...variantData(variant) },
+            update: variantData(variant),
           });
         }
         await tx.outboxEvent.create({

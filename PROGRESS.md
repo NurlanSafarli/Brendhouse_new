@@ -27,3 +27,10 @@ Outstanding / blocked:
 Approved updates (not deviations): written specifications replace V3 requirements; neutral placeholders/text wordmark allowed; phases continue automatically after green gates; spent returned-order bonuses create debt offset by future earnings. Architecture and stack unchanged.
 
 Next: apply saved Prisma network access, finish and validate Phase 1, then proceed automatically to catalog/search/PDP Phase 2. Provider identities, regional delivery pricing and numeric loyalty rules remain open for their dependent phases.
+
+## Follow-up fixes
+- Rechecked Prisma: checksum download still fails with proxy 403. Saved draft contains binaries.prisma.sh, but runtime custom allowed_hosts remains empty. User must apply/publish the saved environment network change; no duplicate draft was created.
+- Import payloads now explicitly allowlist variant fields, preventing source JSON from injecting IDs or nested relation writes.
+- Blank identifiers and prices above PostgreSQL Int range are rejected.
+- Development provenance is preserved on re-import; drafted SQL additionally prevents clearing it under concurrent updates. SQL remains unexecuted pending Prisma/migrations.
+- Lint and frontend/API type-check passed; 7 unit tests passed. Import DB integration/type verification still awaits the generated Prisma client. Phase 1 remains incomplete; Phase 2 has not started.

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { validEan13, validateRow } from "./catalog";
+import { validEan13, validateRow, variantData } from "./catalog";
 const row = {
   sourceId: "1",
   code: "X",
@@ -27,4 +27,23 @@ describe("import boundary", () => {
     ).toBe(false);
     expect(validateRow(null)).toBe(false);
   });
+});
+
+it("rejects blank identities and PostgreSQL integer overflow", () => {
+  expect(validateRow({ ...row, sourceId: "   " })).toBe(false);
+  expect(
+    validateRow({
+      ...row,
+      variants: [{ ...row.variants[0], price: 2147483648 }],
+    }),
+  ).toBe(false);
+});
+it("drops imported database identifiers and nested relation operations", () => {
+  const external = {
+    ...row.variants[0],
+    productId: "other-product",
+    id: "other-variant",
+    balances: { deleteMany: {} },
+  };
+  expect(variantData(external)).toEqual(row.variants[0]);
 });

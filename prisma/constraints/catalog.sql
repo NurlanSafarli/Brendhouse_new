@@ -18,3 +18,14 @@ CREATE FUNCTION reject_audit_mutation() RETURNS trigger LANGUAGE plpgsql AS $$
 BEGIN RAISE EXCEPTION 'Audit events are immutable'; END;
 $$;
 CREATE TRIGGER audit_immutable BEFORE UPDATE OR DELETE ON "AuditEvent" FOR EACH ROW EXECUTE FUNCTION reject_audit_mutation();
+-- Development provenance cannot be cleared, including by concurrent imports.
+CREATE FUNCTION preserve_development_provenance() RETURNS trigger LANGUAGE plpgsql AS $$
+BEGIN
+  IF OLD."developmentOnly" AND NOT NEW."developmentOnly" THEN
+    RAISE EXCEPTION 'Development provenance is permanent';
+  END IF;
+  RETURN NEW;
+END;
+$$;
+CREATE TRIGGER product_development_provenance BEFORE UPDATE ON "Product"
+FOR EACH ROW EXECUTE FUNCTION preserve_development_provenance();

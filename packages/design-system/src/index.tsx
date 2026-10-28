@@ -1,25 +1,344 @@
-'use client';
-import * as React from 'react';
-import * as Dialog from '@radix-ui/react-dialog';
-import * as AccordionPrimitive from '@radix-ui/react-accordion';
-import { cva, type VariantProps } from 'class-variance-authority';
-import { clsx, type ClassValue } from 'clsx';
-import { twMerge } from 'tailwind-merge';
-import { X, ChevronDown, ShoppingBag, ArrowRight, Check, Minus, Plus } from 'lucide-react';
-export function cn(...inputs: ClassValue[]) { return twMerge(clsx(inputs)); }
-const buttonVariants=cva('button',{variants:{variant:{primary:'button-primary',secondary:'button-secondary',quiet:'button-quiet'}},defaultVariants:{variant:'primary'}});
-export function Button({className,variant,...props}:React.ButtonHTMLAttributes<HTMLButtonElement>&VariantProps<typeof buttonVariants>){return <button className={cn(buttonVariants({variant}),className)} {...props}/>;}
-export function Input({label,error,id,...props}:React.InputHTMLAttributes<HTMLInputElement>&{label:string;error?:string}){const generated=React.useId();const inputId=id??generated;return <div className="field"><label htmlFor={inputId}>{label}</label><input id={inputId} aria-invalid={!!error} aria-describedby={error?`${inputId}-error`:undefined} {...props}/>{error&&<p className="error" id={`${inputId}-error`}>{error}</p>}</div>;}
-export function Badge({children,tone='neutral'}:{children:React.ReactNode;tone?:'neutral'|'sale'|'success'}){return <span className={`badge badge-${tone}`}>{children}</span>;}
-export function AnnouncementBar({messages}:{messages:string[]}){const [dismissed,setDismissed]=React.useState(false);const [index,setIndex]=React.useState(0);if(dismissed||!messages.length)return null;return <aside className="announcement" aria-label="Məlumat"><span>{messages[index%messages.length]}</span>{messages.length>1&&<button aria-label="Növbəti məlumat" onClick={()=>setIndex(index+1)}><ArrowRight size={16}/></button>}<button aria-label="Məlumatı bağla" onClick={()=>setDismissed(true)}><X size={16}/></button></aside>;}
-export function BrandBlock(){return <div className="brand-block" role="img" aria-label="Brend House — məhsul şəkli əlavə edilməyib"><span>BH</span><small>BREND HOUSE</small></div>;}
-export function ProductCard({title,price,oldPrice,onAdd}:{title:string;price?:number;oldPrice?:number;onAdd?:()=>void}){return <article className="product-card"><BrandBlock/><div className="product-meta"><p>{title}</p>{price!==undefined&&<div className="price"><strong>{money(price)}</strong>{oldPrice!==undefined&&oldPrice>price&&<del>{money(oldPrice)}</del>}</div>}{onAdd&&<Button variant="secondary" onClick={onAdd}>Ölçü seç <Plus size={16}/></Button>}</div></article>;}
-export function money(qepik:number){if(!Number.isSafeInteger(qepik)||qepik<0)throw new Error('Invalid money');return `${(qepik/100).toFixed(2)} ₼`;}
-export function Modal({title,trigger,children}:{title:string;trigger:React.ReactNode;children:React.ReactNode}){return <Dialog.Root><Dialog.Trigger asChild>{trigger}</Dialog.Trigger><Dialog.Portal><Dialog.Overlay className="overlay"/><Dialog.Content className="modal"><div className="modal-heading"><Dialog.Title>{title}</Dialog.Title><Dialog.Close asChild><Button variant="quiet" aria-label="Bağla"><X/></Button></Dialog.Close></div><Dialog.Description className="sr-only">{title} haqqında ətraflı məlumat</Dialog.Description>{children}<Dialog.Close asChild><Button variant="secondary">Məhsula qayıt</Button></Dialog.Close></Dialog.Content></Dialog.Portal></Dialog.Root>;}
-export function Accordion({items}:{items:{title:string;content:React.ReactNode}[]}){return <AccordionPrimitive.Root type="single" collapsible>{items.map(item=><AccordionPrimitive.Item className="accordion-item" key={item.title} value={item.title}><AccordionPrimitive.Header><AccordionPrimitive.Trigger>{item.title}<ChevronDown size={18}/></AccordionPrimitive.Trigger></AccordionPrimitive.Header><AccordionPrimitive.Content>{item.content}</AccordionPrimitive.Content></AccordionPrimitive.Item>)}</AccordionPrimitive.Root>;}
-export type SizeRow={size:string;chest:string;waist:string;hips?:string};
-export function SizeGuideTable({rows,verified}:{rows:SizeRow[];verified:boolean}){return <div>{verified&&rows.length?<div className="table-scroll"><table><caption>Bədən ölçüləri (sm)</caption><thead><tr><th>Ölçü</th><th>Sinə</th><th>Bel</th><th>Omba</th></tr></thead><tbody>{rows.map(row=><tr key={row.size}><th>{row.size}</th><td>{row.chest}</td><td>{row.waist}</td><td>{row.hips??'—'}</td></tr>)}</tbody></table></div>:<p className="empty-note">Təsdiqlənmiş ölçü cədvəli hələ əlavə edilməyib.</p>}<p className="muted">Ölçülər təxmini bədən ölçüləridir, geyimin ölçüləri deyil. Brendə, modelə və fasona görə fərqlənə bilər.</p><Accordion items={[{title:'Necə ölçməli?',content:<p>Nazik geyim üzərindən ölçün. Sinəni ən geniş hissədən, beli təbii bel xəttindən, ombanı isə ən geniş hissədən ölçün.</p>}]}/></div>;}
-export function SizeGuide(){const [tab,setTab]=React.useState('Kişi');return <div><div className="tabs" aria-label="Ölçü qrupu">{['Kişi','Qadın','Uşaq'].map(label=><Button key={label} variant={tab===label?'primary':'quiet'} aria-pressed={tab===label} onClick={()=>setTab(label)}>{label}</Button>)}</div><section aria-label={`${tab} ölçüləri`}><SizeGuideTable verified={false} rows={[]}/></section></div>;}
-export function MiniCart(){return <Modal title="Səbətim (0)" trigger={<Button variant="secondary"><ShoppingBag size={18}/> Səbətim (0)</Button>}><div className="empty-cart"><ShoppingBag size={40} strokeWidth={1}/><h3>Səbətiniz boşdur</h3><p>Bəyəndiyiniz məhsulları burada bir araya gətirin.</p></div></Modal>;}
-export function QuantityStepper(){const [quantity,setQuantity]=React.useState(1);return <div className="stepper"><Button variant="quiet" aria-label="Miqdarı azalt" disabled={quantity===1} onClick={()=>setQuantity(quantity-1)}><Minus size={16}/></Button><output aria-live="polite">{quantity}</output><Button variant="quiet" aria-label="Miqdarı artır" onClick={()=>setQuantity(quantity+1)}><Plus size={16}/></Button></div>;}
-export function TrustItem({children}:{children:React.ReactNode}){return <p className="trust-item"><Check size={18}/>{children}</p>;}
+"use client";
+import * as React from "react";
+import * as Dialog from "@radix-ui/react-dialog";
+import * as AccordionPrimitive from "@radix-ui/react-accordion";
+import { cva, type VariantProps } from "class-variance-authority";
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
+import {
+  X,
+  ChevronDown,
+  ShoppingBag,
+  ArrowRight,
+  Check,
+  Minus,
+  Plus,
+} from "lucide-react";
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
+const buttonVariants = cva("button", {
+  variants: {
+    variant: {
+      primary: "button-primary",
+      secondary: "button-secondary",
+      quiet: "button-quiet",
+    },
+  },
+  defaultVariants: { variant: "primary" },
+});
+export function Button({
+  className,
+  variant,
+  ...props
+}: React.ButtonHTMLAttributes<HTMLButtonElement> &
+  VariantProps<typeof buttonVariants>) {
+  return (
+    <button className={cn(buttonVariants({ variant }), className)} {...props} />
+  );
+}
+export function Input({
+  label,
+  error,
+  id,
+  ...props
+}: React.InputHTMLAttributes<HTMLInputElement> & {
+  label: string;
+  error?: string;
+}) {
+  const generated = React.useId();
+  const inputId = id ?? generated;
+  return (
+    <div className="field">
+      <label htmlFor={inputId}>{label}</label>
+      <input
+        id={inputId}
+        aria-invalid={!!error}
+        aria-describedby={error ? `${inputId}-error` : undefined}
+        {...props}
+      />
+      {error && (
+        <p className="error" id={`${inputId}-error`}>
+          {error}
+        </p>
+      )}
+    </div>
+  );
+}
+export function Badge({
+  children,
+  tone = "neutral",
+}: {
+  children: React.ReactNode;
+  tone?: "neutral" | "sale" | "success";
+}) {
+  return <span className={`badge badge-${tone}`}>{children}</span>;
+}
+export function AnnouncementBar({ messages }: { messages: string[] }) {
+  const [dismissed, setDismissed] = React.useState(false);
+  const [index, setIndex] = React.useState(0);
+  if (dismissed || !messages.length) return null;
+  return (
+    <aside className="announcement" aria-label="Məlumat">
+      <span>{messages[index % messages.length]}</span>
+      {messages.length > 1 && (
+        <button
+          aria-label="Növbəti məlumat"
+          onClick={() => setIndex(index + 1)}
+        >
+          <ArrowRight size={16} />
+        </button>
+      )}
+      <button aria-label="Məlumatı bağla" onClick={() => setDismissed(true)}>
+        <X size={16} />
+      </button>
+    </aside>
+  );
+}
+export function BrandBlock() {
+  return (
+    <div
+      className="brand-block"
+      role="img"
+      aria-label="Brend House — məhsul şəkli əlavə edilməyib"
+    >
+      <span>BH</span>
+      <small>BREND HOUSE</small>
+    </div>
+  );
+}
+export function ProductCard({
+  title,
+  price,
+  oldPrice,
+  onAdd,
+}: {
+  title: string;
+  price?: number;
+  oldPrice?: number;
+  onAdd?: () => void;
+}) {
+  return (
+    <article className="product-card">
+      <BrandBlock />
+      <div className="product-meta">
+        <p>{title}</p>
+        {price !== undefined && (
+          <div className="price">
+            <strong>{money(price)}</strong>
+            {oldPrice !== undefined && oldPrice > price && (
+              <del>{money(oldPrice)}</del>
+            )}
+          </div>
+        )}
+        {onAdd && (
+          <Button variant="secondary" onClick={onAdd}>
+            Ölçü seç <Plus size={16} />
+          </Button>
+        )}
+      </div>
+    </article>
+  );
+}
+export function money(qepik: number) {
+  if (!Number.isSafeInteger(qepik) || qepik < 0)
+    throw new Error("Invalid money");
+  return `${(qepik / 100).toFixed(2)} ₼`;
+}
+export function Modal({
+  title,
+  trigger,
+  children,
+}: {
+  title: string;
+  trigger: React.ReactNode;
+  children: React.ReactNode;
+}) {
+  return (
+    <Dialog.Root>
+      <Dialog.Trigger asChild>{trigger}</Dialog.Trigger>
+      <Dialog.Portal>
+        <Dialog.Overlay className="overlay" />
+        <Dialog.Content className="modal">
+          <div className="modal-heading">
+            <Dialog.Title>{title}</Dialog.Title>
+            <Dialog.Close asChild>
+              <Button variant="quiet" aria-label="Bağla">
+                <X />
+              </Button>
+            </Dialog.Close>
+          </div>
+          <Dialog.Description className="sr-only">
+            {title} haqqında ətraflı məlumat
+          </Dialog.Description>
+          {children}
+          <Dialog.Close asChild>
+            <Button variant="secondary">Məhsula qayıt</Button>
+          </Dialog.Close>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
+  );
+}
+export function Accordion({
+  items,
+}: {
+  items: { title: string; content: React.ReactNode }[];
+}) {
+  return (
+    <AccordionPrimitive.Root type="single" collapsible>
+      {items.map((item) => (
+        <AccordionPrimitive.Item
+          className="accordion-item"
+          key={item.title}
+          value={item.title}
+        >
+          <AccordionPrimitive.Header>
+            <AccordionPrimitive.Trigger>
+              {item.title}
+              <ChevronDown size={18} />
+            </AccordionPrimitive.Trigger>
+          </AccordionPrimitive.Header>
+          <AccordionPrimitive.Content>
+            {item.content}
+          </AccordionPrimitive.Content>
+        </AccordionPrimitive.Item>
+      ))}
+    </AccordionPrimitive.Root>
+  );
+}
+export type SizeRow = {
+  size: string;
+  chest: string;
+  waist: string;
+  hips?: string;
+};
+export function SizeGuideTable({
+  rows,
+  verified,
+}: {
+  rows: SizeRow[];
+  verified: boolean;
+}) {
+  return (
+    <div>
+      {verified && rows.length ? (
+        <div className="table-scroll">
+          <table>
+            <caption>Bədən ölçüləri (sm)</caption>
+            <thead>
+              <tr>
+                <th>Ölçü</th>
+                <th>Sinə</th>
+                <th>Bel</th>
+                <th>Omba</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((row) => (
+                <tr key={row.size}>
+                  <th>{row.size}</th>
+                  <td>{row.chest}</td>
+                  <td>{row.waist}</td>
+                  <td>{row.hips ?? "—"}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <p className="empty-note">
+          Təsdiqlənmiş ölçü cədvəli hələ əlavə edilməyib.
+        </p>
+      )}
+      <p className="muted">
+        Ölçülər təxmini bədən ölçüləridir, geyimin ölçüləri deyil. Brendə,
+        modelə və fasona görə fərqlənə bilər.
+      </p>
+      <Accordion
+        items={[
+          {
+            title: "Necə ölçməli?",
+            content: (
+              <p>
+                Nazik geyim üzərindən ölçün. Sinəni ən geniş hissədən, beli
+                təbii bel xəttindən, ombanı isə ən geniş hissədən ölçün.
+              </p>
+            ),
+          },
+        ]}
+      />
+    </div>
+  );
+}
+export function SizeGuide() {
+  const [tab, setTab] = React.useState("Kişi");
+  return (
+    <div>
+      <div className="tabs" aria-label="Ölçü qrupu">
+        {["Kişi", "Qadın", "Uşaq"].map((label) => (
+          <Button
+            key={label}
+            variant={tab === label ? "primary" : "quiet"}
+            aria-pressed={tab === label}
+            onClick={() => setTab(label)}
+          >
+            {label}
+          </Button>
+        ))}
+      </div>
+      <section aria-label={`${tab} ölçüləri`}>
+        <SizeGuideTable verified={false} rows={[]} />
+      </section>
+    </div>
+  );
+}
+export function MiniCart() {
+  return (
+    <Modal
+      title="Səbətim (0)"
+      trigger={
+        <Button variant="secondary">
+          <ShoppingBag size={18} /> Səbətim (0)
+        </Button>
+      }
+    >
+      <div className="empty-cart">
+        <ShoppingBag size={40} strokeWidth={1} />
+        <h3>Səbətiniz boşdur</h3>
+        <p>Bəyəndiyiniz məhsulları burada bir araya gətirin.</p>
+      </div>
+    </Modal>
+  );
+}
+export function QuantityStepper() {
+  const [quantity, setQuantity] = React.useState(1);
+  return (
+    <div className="stepper">
+      <Button
+        variant="quiet"
+        aria-label="Miqdarı azalt"
+        disabled={quantity === 1}
+        onClick={() => setQuantity(quantity - 1)}
+      >
+        <Minus size={16} />
+      </Button>
+      <output aria-live="polite">{quantity}</output>
+      <Button
+        variant="quiet"
+        aria-label="Miqdarı artır"
+        onClick={() => setQuantity(quantity + 1)}
+      >
+        <Plus size={16} />
+      </Button>
+    </div>
+  );
+}
+export function TrustItem({ children }: { children: React.ReactNode }) {
+  return (
+    <p className="trust-item">
+      <Check size={18} />
+      {children}
+    </p>
+  );
+}

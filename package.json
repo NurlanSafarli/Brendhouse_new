@@ -1,1 +1,33 @@
-{"name":"brendhouse","private":true,"workspaces":["apps/*","packages/*"],"scripts":{"dev":"npm run dev -w @brendhouse/storefront","build":"npm run build -w @brendhouse/storefront","lint":"eslint .","typecheck":"tsc --noEmit -p apps/storefront/tsconfig.json","test":"vitest run"},"devDependencies":{"typescript":"^5.9.3","eslint":"^9.39.0","eslint-config-next":"16.4.3","vitest":"^4.0.0","@types/node":"^24.0.0","@types/react":"^19.0.0","@types/react-dom":"^19.0.0"}}
+{
+  "name": "brendhouse",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w @brendhouse/storefront",
+    "build": "npm run build -w @brendhouse/storefront && npm run build -w @brendhouse/api",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit -p apps/storefront/tsconfig.json && tsc --noEmit -p apps/api/tsconfig.json",
+    "test": "vitest run",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate deploy",
+    "db:seed": "tsx scripts/seed.ts",
+    "import:catalog": "tsx scripts/import.ts",
+    "test:browser": "playwright test"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "eslint": "^9.39.0",
+    "eslint-config-next": "16.4.3",
+    "vitest": "^4.0.0",
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "prisma": "6.19.3",
+    "tsx": "^4.20.0",
+    "@playwright/test": "^1.58.0",
+    "prettier": "^3.6.0"
+  }
+}

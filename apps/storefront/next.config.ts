@@ -1,3 +1,3 @@
-import type { NextConfig } from 'next';
-const config: NextConfig = { transpilePackages: ['@brendhouse/design-system'] };
+import type { NextConfig } from "next";
+const config: NextConfig = { transpilePackages: ["@brendhouse/design-system"] };
 export default config;

@@ -1,4 +1,241 @@
-import {AnnouncementBar,Button,Input,Badge,ProductCard,Modal,SizeGuide,MiniCart,Accordion,QuantityStepper,TrustItem} from '@brendhouse/design-system';
-export const metadata={title:'Dizayn sistemi | Brend House',robots:{index:false,follow:false}};
-const colors=[['Əsas','#A47A68'],['Düymə','#7D5646'],['Yumşaq','#C9A898'],['Krem','#F1E6E0'],['Fon','#FBF8F6'],['Mətn','#2A211D'],['Təsdiq','#2E7D5B'],['Endirim','#B3402F']];
-export default function DesignSystem(){return <><a className="sr-only focus:not-sr-only" href="#content">Məzmuna keç</a><AnnouncementBar messages={['19 filial • 2014-cü ildən','Bakı daxilinə çatdırılma 5 ₼']}/><header className="site-header"><div className="wrap header-inner"><a className="wordmark" href="/">BREND HOUSE</a><span className="header-label">Vizual kimlik / 01</span><MiniCart/></div></header><main className="wrap" id="content"><section className="hero"><p className="eyebrow">BREND HOUSE · DİZAYN SİSTEMİ</p><h1>Sadə görünür.<br/>Düşünülmüş hiss edilir.</h1><p>İsti rənglər, aydın məlumat və rahat seçim. Brend House rəqəmsal təcrübəsinin əsasları.</p><div className="hero-bottom"><a href="#components" className="button button-primary">Komponentlərə bax →</a><span className="hero-number">Rəng · Tipoqrafiya · Qarşılıqlı əlaqə</span></div></section><section className="section"><div className="section-heading"><small>01</small><h2>Rəng palitrası</h2></div><div className="swatches">{colors.map(([label,color])=><div className="swatch" key={color}><div className="swatch-color" style={{background:color}}/><div className="swatch-info"><strong>{label}</strong><code>{color}</code></div></div>)}</div></section><section className="section"><div className="section-heading"><small>02</small><h2>Sözlərə yer veririk</h2></div><div className="grid"><div><p className="eyebrow">Manrope · 400 / 600 / 700</p><h2>Gözəl həyat,<br/>gözəl geyimlə başlayır!</h2><p>Ə ə İ ı Ş ş Ç ç Ğ ğ Ö ö Ü ü</p></div><div className="panel"><h3>Aydın, səmimi, Azərbaycan dilində.</h3><p>Hər ölçüdə rahat oxunan mətn. Məhsulu tanımaq və düşünülmüş seçim etmək üçün lazım olan məlumat.</p><p className="muted">Boşluq sistemi: 4 · 8 · 12 · 16 · 24 · 32 · 48 · 64 px</p></div></div></section><section className="section" id="components"><div className="section-heading"><small>03</small><h2>Gündəlik qarşılıqlı əlaqə</h2></div><div className="grid"><div className="panel"><h3>Düymələr və işarələr</h3><div className="row"><Button>Səbətə əlavə et →</Button><Button variant="secondary">Seçimə qayıt</Button><Button variant="quiet">Ətraflı bax</Button><Button disabled>Ölçü seçin</Button></div><div className="row" style={{marginTop:24}}><Badge>Yeni</Badge><Badge tone="success">Təsdiqlənib</Badge><Badge tone="sale">Endirim</Badge></div><div style={{marginTop:24}}><QuantityStepper/></div></div><div className="panel"><Input label="Adınız" autoComplete="given-name" placeholder="Adınızı daxil edin"/><Input label="Telefon nömrəsi" type="tel" autoComplete="tel" placeholder="+994"/><Input label="Telefon nömrəsi — xəta vəziyyəti" type="tel" error="Telefon nömrəsini tam daxil edin."/></div></div></section><section className="section"><div className="section-heading"><small>04</small><h2>Məhsula ayrılan məkan</h2></div><p className="muted">Şəkil, qiymət və məhsul məlumatları təsdiqləndikdən sonra dərc olunur.</p><div className="grid product-grid"><ProductCard title="Məhsul kartı"/><ProductCard title="Uzun məhsul adlarının görünüşü və sətirə keçidi"/><div className="panel" role="status" aria-label="Məhsullar yüklənir"><div className="skeleton" style={{height:160,width:'100%'}}/><div className="skeleton"/><div className="skeleton" style={{width:'45%'}}/><p className="muted">Yüklənir…</p></div><div className="panel"><h3>Hələ məhsul yoxdur</h3><p className="muted">Yeni məhsullar əlavə edildikdə burada görünəcək.</p></div></div></section><section className="section"><div className="section-heading"><small>05</small><h2>Seçimdən əvvəl əminlik</h2></div><div className="grid"><div className="panel"><h3>Almazdan əvvəl bil</h3><TrustItem>Qapıda yoxla, sonra ödə</TrustItem><TrustItem>14 gün ərzində qaytarma</TrustItem><TrustItem>Bakı üzrə çatdırılma: 5 ₼</TrustItem><Modal title="Ölçü bələdçisi" trigger={<Button variant="secondary">Ölçü bələdçisi ↗</Button>}><SizeGuide/></Modal></div><div className="panel"><Accordion items={[{title:'Parça tərkibi və material',content:<p>Yalnız təsdiqlənmiş məhsul məlumatları göstərilir.</p>},{title:'Ölçü, fason və detallar',content:<p>Ölçü məlumatları məhsula və kateqoriyaya uyğun idarə olunur.</p>},{title:'Yuma və qulluq təlimatı',content:<p>Təsdiqlənmiş qulluq təlimatı olduqda göstərilir.</p>}]}/></div></div></section></main><footer className="wrap footer">BREND HOUSE · Dizayn sistemi · Azərbaycan dili</footer></>;}
+import Link from "next/link";
+import {
+  AnnouncementBar,
+  Button,
+  Input,
+  Badge,
+  ProductCard,
+  Modal,
+  SizeGuide,
+  MiniCart,
+  Accordion,
+  QuantityStepper,
+  TrustItem,
+} from "@brendhouse/design-system";
+export const metadata = {
+  title: "Dizayn sistemi | Brend House",
+  robots: { index: false, follow: false },
+};
+const colors = [
+  ["Əsas", "#A47A68"],
+  ["Düymə", "#7D5646"],
+  ["Yumşaq", "#C9A898"],
+  ["Krem", "#F1E6E0"],
+  ["Fon", "#FBF8F6"],
+  ["Mətn", "#2A211D"],
+  ["Təsdiq", "#2E7D5B"],
+  ["Endirim", "#B3402F"],
+];
+export default function DesignSystem() {
+  return (
+    <>
+      <a className="sr-only focus:not-sr-only" href="#content">
+        Məzmuna keç
+      </a>
+      <AnnouncementBar
+        messages={["19 filial • 2014-cü ildən", "Bakı daxilinə çatdırılma 5 ₼"]}
+      />
+      <header className="site-header">
+        <div className="wrap header-inner">
+          <Link className="wordmark" href="/">
+            BREND HOUSE
+          </Link>
+          <span className="header-label">Vizual kimlik / 01</span>
+          <MiniCart />
+        </div>
+      </header>
+      <main className="wrap" id="content">
+        <section className="hero">
+          <p className="eyebrow">BREND HOUSE · DİZAYN SİSTEMİ</p>
+          <h1>
+            Sadə görünür.
+            <br />
+            Düşünülmüş hiss edilir.
+          </h1>
+          <p>
+            İsti rənglər, aydın məlumat və rahat seçim. Brend House rəqəmsal
+            təcrübəsinin əsasları.
+          </p>
+          <div className="hero-bottom">
+            <a href="#components" className="button button-primary">
+              Komponentlərə bax →
+            </a>
+            <span className="hero-number">
+              Rəng · Tipoqrafiya · Qarşılıqlı əlaqə
+            </span>
+          </div>
+        </section>
+        <section className="section">
+          <div className="section-heading">
+            <small>01</small>
+            <h2>Rəng palitrası</h2>
+          </div>
+          <div className="swatches">
+            {colors.map(([label, color]) => (
+              <div className="swatch" key={color}>
+                <div className="swatch-color" style={{ background: color }} />
+                <div className="swatch-info">
+                  <strong>{label}</strong>
+                  <code>{color}</code>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+        <section className="section">
+          <div className="section-heading">
+            <small>02</small>
+            <h2>Sözlərə yer veririk</h2>
+          </div>
+          <div className="grid">
+            <div>
+              <p className="eyebrow">Manrope · 400 / 600 / 700</p>
+              <h2>
+                Gözəl həyat,
+                <br />
+                gözəl geyimlə başlayır!
+              </h2>
+              <p>Ə ə İ ı Ş ş Ç ç Ğ ğ Ö ö Ü ü</p>
+            </div>
+            <div className="panel">
+              <h3>Aydın, səmimi, Azərbaycan dilində.</h3>
+              <p>
+                Hər ölçüdə rahat oxunan mətn. Məhsulu tanımaq və düşünülmüş
+                seçim etmək üçün lazım olan məlumat.
+              </p>
+              <p className="muted">
+                Boşluq sistemi: 4 · 8 · 12 · 16 · 24 · 32 · 48 · 64 px
+              </p>
+            </div>
+          </div>
+        </section>
+        <section className="section" id="components">
+          <div className="section-heading">
+            <small>03</small>
+            <h2>Gündəlik qarşılıqlı əlaqə</h2>
+          </div>
+          <div className="grid">
+            <div className="panel">
+              <h3>Düymələr və işarələr</h3>
+              <div className="row">
+                <Button>Səbətə əlavə et →</Button>
+                <Button variant="secondary">Seçimə qayıt</Button>
+                <Button variant="quiet">Ətraflı bax</Button>
+                <Button disabled>Ölçü seçin</Button>
+              </div>
+              <div className="row" style={{ marginTop: 24 }}>
+                <Badge>Yeni</Badge>
+                <Badge tone="success">Təsdiqlənib</Badge>
+                <Badge tone="sale">Endirim</Badge>
+              </div>
+              <div style={{ marginTop: 24 }}>
+                <QuantityStepper />
+              </div>
+            </div>
+            <div className="panel">
+              <Input
+                label="Adınız"
+                autoComplete="given-name"
+                placeholder="Adınızı daxil edin"
+              />
+              <Input
+                label="Telefon nömrəsi"
+                type="tel"
+                autoComplete="tel"
+                placeholder="+994"
+              />
+              <Input
+                label="Telefon nömrəsi — xəta vəziyyəti"
+                type="tel"
+                error="Telefon nömrəsini tam daxil edin."
+              />
+            </div>
+          </div>
+        </section>
+        <section className="section">
+          <div className="section-heading">
+            <small>04</small>
+            <h2>Məhsula ayrılan məkan</h2>
+          </div>
+          <p className="muted">
+            Şəkil, qiymət və məhsul məlumatları təsdiqləndikdən sonra dərc
+            olunur.
+          </p>
+          <div className="grid product-grid">
+            <ProductCard title="Məhsul kartı" />
+            <ProductCard title="Uzun məhsul adlarının görünüşü və sətirə keçidi" />
+            <div
+              className="panel"
+              role="status"
+              aria-label="Məhsullar yüklənir"
+            >
+              <div
+                className="skeleton"
+                style={{ height: 160, width: "100%" }}
+              />
+              <div className="skeleton" />
+              <div className="skeleton" style={{ width: "45%" }} />
+              <p className="muted">Yüklənir…</p>
+            </div>
+            <div className="panel">
+              <h3>Hələ məhsul yoxdur</h3>
+              <p className="muted">
+                Yeni məhsullar əlavə edildikdə burada görünəcək.
+              </p>
+            </div>
+          </div>
+        </section>
+        <section className="section">
+          <div className="section-heading">
+            <small>05</small>
+            <h2>Seçimdən əvvəl əminlik</h2>
+          </div>
+          <div className="grid">
+            <div className="panel">
+              <h3>Almazdan əvvəl bil</h3>
+              <TrustItem>Qapıda yoxla, sonra ödə</TrustItem>
+              <TrustItem>14 gün ərzində qaytarma</TrustItem>
+              <TrustItem>Bakı üzrə çatdırılma: 5 ₼</TrustItem>
+              <Modal
+                title="Ölçü bələdçisi"
+                trigger={<Button variant="secondary">Ölçü bələdçisi ↗</Button>}
+              >
+                <SizeGuide />
+              </Modal>
+            </div>
+            <div className="panel">
+              <Accordion
+                items={[
+                  {
+                    title: "Parça tərkibi və material",
+                    content: (
+                      <p>Yalnız təsdiqlənmiş məhsul məlumatları göstərilir.</p>
+                    ),
+                  },
+                  {
+                    title: "Ölçü, fason və detallar",
+                    content: (
+                      <p>
+                        Ölçü məlumatları məhsula və kateqoriyaya uyğun idarə
+                        olunur.
+                      </p>
+                    ),
+                  },
+                  {
+                    title: "Yuma və qulluq təlimatı",
+                    content: (
+                      <p>Təsdiqlənmiş qulluq təlimatı olduqda göstərilir.</p>
+                    ),
+                  },
+                ]}
+              />
+            </div>
+          </div>
+        </section>
+      </main>
+      <footer className="wrap footer">
+        BREND HOUSE · Dizayn sistemi · Azərbaycan dili
+      </footer>
+    </>
+  );
+}

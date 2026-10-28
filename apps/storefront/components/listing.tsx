@@ -95,7 +95,10 @@ export async function Listing({
                     </Link>
                     <Favorite id={product.slug} />
                   </div>
-                  <p className="category-label">{product.category}</p>
+                  <p className="category-label">
+                    {product.category}
+                    {product.developmentOnly ? " · Təsdiqlənməyib" : ""}
+                  </p>
                   <Link
                     className="product-title"
                     href={`/product/${product.slug}`}

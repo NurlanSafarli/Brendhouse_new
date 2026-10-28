@@ -14,9 +14,9 @@ export type CatalogProduct = {
   section: string;
   category: string;
   description?: string;
-  verification: "VERIFIED";
-  publication: "PUBLISHED";
-  developmentOnly: false;
+  verification: "VERIFIED" | "UNVERIFIED";
+  publication: "PUBLISHED" | "DRAFT";
+  developmentOnly: boolean;
   variants: CatalogVariant[];
   attributes: {
     key: string;

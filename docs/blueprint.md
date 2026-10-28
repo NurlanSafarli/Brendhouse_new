@@ -64,3 +64,8 @@ Need V3 mockups and original logo, live-site network access, source exports and 
 The user answered “yes” to the listed delivery rules: treat Bakı 5 ₼, free delivery from 60 ₼, 14-day returns, inspection before payment and cash/card at the door as approved policy direction. Regional pricing remains unspecified because no rate was proposed. Provider terminal capability still needs validation.
 The user answered “all” to loyalty: approve the requested feature direction and explicit proposed durations (30-day welcome validity/guest claim window; 12-month expiry), but do not invent X/Y earn/redemption percentages or A/B tier thresholds. These numeric values remain open; sale stacking was not a concrete yes/no proposal and still needs an explicit rule.
 The user answered “yes” to the provider/migration question: specific provider names and migration source remain unidentified. Do not infer a gateway or POS system from this answer. Earlier pending-policy statements are superseded only by the explicit confirmations above.
+
+## Approved implementation updates
+- Continue automatically after green phase gates; stop for concrete missing decisions or external blockers.
+- Written sections 2 and 6 replace all V3/mockup dependencies. Design original UI; use temporary plain text wordmark and neutral brand image blocks until assets are imported.
+- Returned purchases whose bonuses were spent create wallet debt, offset by future earnings. Do not reduce refunds by that spent bonus amount.

@@ -19,3 +19,9 @@ The schema/import/seed are work in progress. Network policy currently blocks Pri
 ## Browser review
 
 `npm run test:browser` runs 390px and 1440px Chromium flows. This environment uses `/usr/bin/chromium`; set CHROMIUM_PATH for another installation. Browser tests launch the built storefront when needed. Screenshots are written to ignored `test-results/`. Unit tests run separately with `npm test`.
+
+## Phase 2 frontend
+
+Routes: `/`, `/bolme/kisi`, `/bolme/qadin`, `/bolme/usaq`, `/bolme/diger`, `/mehsul-kateqoriyasi/{slug}`, `/axtaris`, `/product/{slug}`, `/secilmisler` and `/design-system`.
+
+The server-only `COMMERCE_API_URL` will point to the NestJS service once its catalog endpoints are implemented. Until then the UI displays a real service-unavailable state, never seed data. The adapter expects `/api/v1/catalog` and `/api/v1/catalog/{slug}` using the contract in `packages/contracts/src/catalog.ts`. This is a frontend contract, not a claim that those endpoints exist today. Product UI is built but live-data verification remains pending. Checkout and add-to-cart are Phase 3.

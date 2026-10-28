@@ -34,3 +34,19 @@ Next: apply saved Prisma network access, finish and validate Phase 1, then proce
 - Blank identifiers and prices above PostgreSQL Int range are rejected.
 - Development provenance is preserved on re-import; drafted SQL additionally prevents clearing it under concurrent updates. SQL remains unexecuted pending Prisma/migrations.
 - Lint and frontend/API type-check passed; 7 unit tests passed. Import DB integration/type verification still awaits the generated Prisma client. Phase 1 remains incomplete; Phase 2 has not started.
+
+## Phase 2 — frontend started by explicit user instruction
+The user authorized beginning Phase 2 while environment preparation continues. This supersedes waiting for Phase 1's green database gate for independent frontend work; it does not mark Phase 1 complete.
+
+Implemented:
+- Original warm-neutral homepage, sticky navigation, mobile menu, section tiles, contact footer and responsive branded image blocks.
+- Section/category/search routes preserving legacy path shapes; URL-based query, size, color and sort controls.
+- Public catalog contract rejects development/unverified/malformed products, attributes, prices and stock. Server-side adapter uses a configured NestJS API address and distinguishes outages from empty results; no fabricated fallback products.
+- Product-detail component: readable title/code, variant-derived price, color/size selection, unavailable sizes, verified attribute cards, size modal and adjacent confirmed-policy trust block. Cart CTA intentionally remains disabled until Phase 3.
+- Local guest wishlist persistence, cross-tab updates, empty state, loading/error/404 states.
+
+Verified: lint, frontend/API type-check and production builds passed; 11 unit tests and 4 browser tests passed. Homepage/catalog screenshots reviewed at 390px. Tests cover route navigation, URL filters, unavailable product protection and horizontal overflow at 390px/1440px; existing modal tests also passed.
+
+Not complete: live NestJS catalog endpoints/Prisma queries, Meilisearch indexing/autocomplete/synonyms/typo tolerance, real media, catalog-loaded PDP browser verification, verified category-specific size charts, stock/branch data, quick add, load-more scroll restoration, store/discount filters and remaining Phase 2 discovery features. Current category titles use generic copy until category API metadata is available. Wishlist currently links saved product slugs; enriched cards depend on catalog API. Public policies currently have one code source with confirmed values; admin PolicySet integration remains pending. No claim of full Phase 2 completion or production readiness.
+
+Prisma recheck still returned proxy 403. Phase 1 migration and DB integration gates remain open. Next: complete shared DB/API/search prerequisites when runtime domain access is applied, then finish Phase 2 against verified catalog data. Phase 3 has not started.

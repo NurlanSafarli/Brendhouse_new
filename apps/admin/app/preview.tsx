@@ -12,23 +12,23 @@ import {
   Plus,
   Search,
 } from "lucide-react";
-type Draft = {
-  id: string;
-  title: string;
-  code: string;
-  price: number;
-  verification: "UNVERIFIED";
-  publication: "DRAFT";
-};
+import { ProductDetails } from "./product-details";
+import { SizeGuides } from "./size-guides";
+import type {
+  ProductDraft as Draft,
+  SizeGuideDraft,
+} from "../lib/catalog-drafts";
 type Event = { id: string; action: string; time: string };
 type State = {
   products: Draft[];
+  guides: SizeGuideDraft[];
   pages: { id: string; title: string; body: string }[];
   policy: { delivery: string; threshold: string; returns: string };
   events: Event[];
 };
 const empty: State = {
   products: [],
+  guides: [],
   pages: [],
   policy: { delivery: "5", threshold: "60", returns: "14" },
   events: [],
@@ -63,8 +63,22 @@ function useDrafts() {
         return empty;
       return {
         ...state,
+        guides: Array.isArray(state.guides)
+          ? state.guides.filter(
+              (g) =>
+                g &&
+                typeof g.id === "string" &&
+                typeof g.category === "string" &&
+                ["Kişi", "Qadın", "Uşaq"].includes(g.section) &&
+                Array.isArray(g.rows) &&
+                typeof g.disclaimer === "string" &&
+                g.verification === "UNVERIFIED" &&
+                g.publication === "DRAFT",
+            )
+          : [],
         products: state.products.filter(
           (p) =>
+            p &&
             typeof p.title === "string" &&
             typeof p.code === "string" &&
             Number.isInteger(p.price) &&
@@ -81,6 +95,7 @@ function useDrafts() {
 const sections = [
   ["İcmal", LayoutDashboard],
   ["Məhsullar", Package],
+  ["Ölçü cədvəlləri", FileText],
   ["Sifarişlər", ShoppingBag],
   ["Müştərilər", Users],
   ["Bonus", Wallet],
@@ -93,6 +108,7 @@ export function AdminPreview() {
   const [role, setRole] = useState("admin");
   const [notice, setNotice] = useState("");
   const [query, setQuery] = useState("");
+  const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
   const state = useDrafts();
   const canEdit = role === "admin" || role === "content";
   function save(next: State, action: string) {
@@ -109,8 +125,10 @@ export function AdminPreview() {
       );
       window.dispatchEvent(new Event("bh-admin-change"));
       setNotice("Lokal qaralama saxlanıldı. Saytda dərc olunmayıb.");
+      return true;
     } catch {
       setNotice("Brauzerdə saxlamaq mümkün olmadı.");
+      return false;
     }
   }
   return (
@@ -226,6 +244,7 @@ export function AdminPreview() {
                         <th>Kod</th>
                         <th>Qiymət</th>
                         <th>Status</th>
+                        <th>Redaktə</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -241,6 +260,15 @@ export function AdminPreview() {
                             <td>{p.code}</td>
                             <td>{(p.price / 100).toFixed(2)} ₼</td>
                             <td>Təsdiqlənməyib</td>
+                            <td>
+                              <button
+                                className="secondary"
+                                aria-label={`${p.code} redaktə et`}
+                                onClick={() => setSelectedProduct(p.id)}
+                              >
+                                Redaktə et
+                              </button>
+                            </td>
                           </tr>
                         ))}
                     </tbody>
@@ -322,6 +350,48 @@ export function AdminPreview() {
               </form>
             </div>
           ) : null}
+          {tab === "Məhsullar" &&
+            selectedProduct &&
+            state.products
+              .filter((p) => p.id === selectedProduct)
+              .map((product) => (
+                <ProductDetails
+                  key={product.id}
+                  product={product}
+                  products={state.products}
+                  canEdit={canEdit}
+                  onClose={() => setSelectedProduct(null)}
+                  onSave={(updated) =>
+                    save(
+                      {
+                        ...state,
+                        products: state.products.map((p) =>
+                          p.id === updated.id ? updated : p,
+                        ),
+                      },
+                      "Məhsul variantları və atributları redaktə edildi",
+                    )
+                  }
+                />
+              ))}
+          {tab === "Ölçü cədvəlləri" && (
+            <SizeGuides
+              guides={state.guides}
+              canEdit={canEdit}
+              onSave={(guide) =>
+                save(
+                  {
+                    ...state,
+                    guides: [
+                      ...state.guides.filter((g) => g.id !== guide.id),
+                      guide,
+                    ],
+                  },
+                  "Ölçü cədvəli qaralaması saxlanıldı",
+                )
+              }
+            />
+          )}
           {tab === "Məzmun" ? (
             <div className="editor-grid">
               <section className="panel">

@@ -2,7 +2,9 @@ import { test, expect } from "@playwright/test";
 test("unverified browsing, cart persistence and guest checkout fail closed", async ({
   page,
 }) => {
-  page.on("pageerror",error=>{throw error;});
+  page.on("pageerror", (error) => {
+    throw error;
+  });
   await page.goto("/bolme/kisi");
   await expect(page.getByText("Polo · Təsdiqlənməyib")).toBeVisible();
   await page
@@ -43,10 +45,27 @@ test("unverified browsing, cart persistence and guest checkout fail closed", asy
   await page.getByLabel("Telefon nömrəsi").fill("+994 50 123 45 67");
   await page.getByLabel("Ünvan (Bakı)").fill("Test ünvanı");
   await expect(page.locator("input[type=password]")).toHaveCount(0);
+  await page.getByLabel("Test nəticəsi").selectOption("unavailable");
   await page.getByRole("button", { name: "Sifarişi təsdiqlə →" }).click();
   await expect(page.locator("form").getByRole("alert")).toContainText(
     "Sifariş qəbulu hazırda əlçatan deyil",
   );
+  await page.getByLabel("Test nəticəsi").selectOption("declined");
+  await page.getByRole("button", { name: "Sifarişi təsdiqlə →" }).click();
+  await expect(page.locator("form").getByRole("alert")).toContainText(
+    "Test ödənişi qəbul edilmədi",
+  );
+  await page.getByLabel("Test nəticəsi").selectOption("success");
+  await page.getByRole("button", { name: "Sifarişi təsdiqlə →" }).click();
+  await expect(
+    page.getByRole("heading", { name: "Sifariş axını tamamlandı" }),
+  ).toBeVisible();
+  await expect(
+    page.getByText(
+      "Bu, frontend yoxlamasıdır. Real sifariş yaradılmayıb və ödəniş tutulmayıb.",
+    ),
+  ).toBeVisible();
+  expect(await page.evaluate(() => localStorage.getItem("bh-cart"))).toBe("[]");
   await page.screenshot({
     path: "test-results/checkout-mobile.png",
     fullPage: true,

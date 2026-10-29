@@ -1,5 +1,7 @@
 # Brend House
 
+**Current scope: frontend-only.** Run `npm run dev:preview` to review temporary products and complete the guest checkout simulation without a database, bank credentials or external services. Run `npm run build:frontend` for a frontend-only production build. Integration instructions: [frontend handoff](docs/frontend-integration.md). Older database/payment blocker notes below describe deferred backend work, not prerequisites for this preview.
+
 Phase 1 implementation in progress. Architecture: [blueprint](docs/blueprint.md). Latest user instructions supersede the blueprint's old phase-approval and V3 requirements: continue on green phase gates; design from the written specification.
 
 Node 24, npm 11. From repository root: `npm ci`, `npm run dev`. Review `/design-system` on the running storefront. The root route is only the Phase 1 shell, not the final storefront.

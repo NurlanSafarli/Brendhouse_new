@@ -22,6 +22,8 @@ export type ProductDraft = {
   publication: "DRAFT";
   variants?: VariantDraft[];
   attributes?: AttributeDraft;
+  media?: { id: string; src: string; alt: string }[];
+  stockDraft?: Record<string, number>;
 };
 export type SizeRowDraft = {
   size: string;

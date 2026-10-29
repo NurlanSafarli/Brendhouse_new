@@ -25,3 +25,15 @@ The schema/import/seed are work in progress. Network policy currently blocks Pri
 Routes: `/`, `/bolme/kisi`, `/bolme/qadin`, `/bolme/usaq`, `/bolme/diger`, `/mehsul-kateqoriyasi/{slug}`, `/axtaris`, `/product/{slug}`, `/secilmisler` and `/design-system`.
 
 The server-only `COMMERCE_API_URL` will point to the NestJS service once its catalog endpoints are implemented. Until then the UI displays a real service-unavailable state, never seed data. The adapter expects `/api/v1/catalog` and `/api/v1/catalog/{slug}` using the contract in `packages/contracts/src/catalog.ts`. This is a frontend contract, not a claim that those endpoints exist today. Product UI is built but live-data verification remains pending. Checkout and add-to-cart are Phase 3.
+
+## Temporary products and Phase 3 review
+
+Start the development storefront with temporary products:
+
+```sh
+ENABLE_UNVERIFIED_CATALOG=true npm run dev -w @brendhouse/storefront -- --port 3001
+```
+
+Open `/bolme/kisi`, select a product and size, add it to `/sebet`, then use `/checkout`. Temporary records are labelled unverified and cannot appear with NODE_ENV=production. The POST checkout endpoint deliberately returns 503 until real order processing is implemented. It does not persist orders or send data to Kapital Bank. The bank is selected, but no payment integration exists yet.
+
+Development browser journey: `npx playwright test --config playwright.development.config.ts`. Production regression: `CI=1 npm run test:browser` after `npm run build`; stop any previously started storefront before rebuilding/testing to avoid stale assets.

@@ -39,3 +39,13 @@ ENABLE_UNVERIFIED_CATALOG=true npm run dev -w @brendhouse/storefront -- --port 3
 Open `/bolme/kisi`, select a product and size, add it to `/sebet`, then use `/checkout`. Temporary records are labelled unverified and cannot appear with NODE_ENV=production. The POST checkout endpoint deliberately returns 503 until real order processing is implemented. It does not persist orders or send data to Kapital Bank. The bank is selected, but no payment integration exists yet.
 
 Development browser journey: `npx playwright test --config playwright.development.config.ts`. Production regression: `CI=1 npm run test:browser` after `npm run build`; stop any previously started storefront before rebuilding/testing to avoid stale assets.
+
+## Bonus/account and admin previews
+
+- `npm run dev:preview`: `/bonus-karti` (test SMS flow), `/hesab` (account UI), `/bonus-qaydalari`.
+- `npm run dev:admin`: separate admin application on port 3002; edits are browser-local, unpublished drafts.
+- `npx playwright test --config playwright.admin.config.ts`: admin mobile/desktop tests.
+- `npm run build:frontend`: builds storefront and admin.
+- New content: `/haqqimizda`, `/elaqe`, `/faq`, `/catdirilma-qaytarma`.
+
+These are frontend checkpoints, not completed production phases. Advanced admin/loyalty/catalog functionality remains in PROGRESS.md. Keep SITE_INDEXABLE=false until a reviewed production launch.

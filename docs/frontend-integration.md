@@ -20,3 +20,15 @@ The request includes only guest details, delivery/payment choice, variant IDs, q
 Kapital Bank e-commerce is the selected future provider. Hosted payment initiation, allowlisted redirect URLs, callback signatures/replay checks and payment status reconciliation require the bank's actual contract. They are deliberately not guessed or simulated as real bank operations. Add a typed payment-redirect outcome when integrating the documented hosted flow; do not collect card numbers in these forms.
 
 Catalog uses `lib/catalog.ts`; connect COMMERCE_API_URL when NestJS endpoints exist. Public DTO guards continue to exclude development/unverified records. Verified media, size charts, admin PolicySet data, search, stock reservation and the remaining frontend screens are still work to complete. This handoff is not a claim that all blueprint features are implemented.
+
+## Bonus and identity preview
+
+`/bonus-karti` runs the development-only identity port. Enter a valid-format phone and the displayed test code 123456. It simulates resend cooldown, expiration, failed-attempt lockout and single use; it never sends SMS, stores the phone, creates a customer/card or authenticates a session. `/hesab` is an explicitly labelled development UI preview. Real balances, card numbers, QR/barcodes, tiers and ledger entries are intentionally absent. The production account route shows only the entry CTA. Future `IdentityPort` implementation must use server-enforced OTP security and real sessions; frontend restrictions are not authorization.
+
+## Separate admin preview
+
+`npm run dev:admin` starts `apps/admin` on port 3002. Product/content/policy drafts and a bounded local change history use the `bh-admin-preview` browser-storage key. Data stays on that browser; no catalog publication happens. Products remain UNVERIFIED/DRAFT. Role selection is a UI exercise, not RBAC. Production renders a closed service screen regardless of the preview flag. Real admin APIs must enforce authorization, verification workflow, audit immutability and approvals server-side. The current product editor is basic: variants, media, size charts, import/export, inventory and operational order/loyalty actions remain to be developed.
+
+## SEO preparation
+
+Metadata uses the intended brendhouse.az origin. SITE_INDEXABLE defaults off; robots disallows crawling and sitemap is empty until an explicit production launch switch. Approved static content routes are the initial sitemap scope. No fake product URLs, addresses, ratings or rich results are generated. Real product/image sitemaps, structured data, migration redirects, analytics/consent wiring, accessibility audit and performance measurement remain outstanding. Do not treat this frontend checkpoint as a launch approval.

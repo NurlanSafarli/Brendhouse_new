@@ -171,6 +171,9 @@ export function CartView() {
           >
             Qeydiyyatsız sifariş et →
           </Link>
+          <Link href="/bonus-karti" className="optional-bonus">
+            Bonus kartı ilə davam et (istəyə bağlı)
+          </Link>
         </aside>
       </div>
     </>

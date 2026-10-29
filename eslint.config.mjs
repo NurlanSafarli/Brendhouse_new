@@ -5,5 +5,11 @@ export default defineConfig([
   ...nextVitals,
   ...nextTs,
   { settings: { next: { rootDir: ["apps/storefront/", "apps/admin/"] } } },
-  globalIgnores(["**/.next/**", "**/dist/**", "**/next-env.d.ts"]),
+  globalIgnores([
+    ".pages-build/**",
+    "pages-dist/**",
+    "**/.next/**",
+    "**/dist/**",
+    "**/next-env.d.ts",
+  ]),
 ]);

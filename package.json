@@ -19,7 +19,9 @@
     "dev:preview": "ENABLE_UNVERIFIED_CATALOG=true npm run dev -w @brendhouse/storefront -- --port 3001",
     "build:frontend": "npm run build -w @brendhouse/storefront && npm run build -w @brendhouse/admin",
     "test:preview": "playwright test --config playwright.development.config.ts",
-    "dev:admin": "ENABLE_ADMIN_PREVIEW=true npm run dev -w @brendhouse/admin"
+    "dev:admin": "ENABLE_ADMIN_PREVIEW=true npm run dev -w @brendhouse/admin",
+    "build:pages": "node scripts/build-pages.mjs",
+    "test:pages": "node scripts/test-pages.mjs"
   },
   "devDependencies": {
     "typescript": "^5.9.3",

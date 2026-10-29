@@ -4,6 +4,6 @@ import nextTs from "eslint-config-next/typescript";
 export default defineConfig([
   ...nextVitals,
   ...nextTs,
-  { settings: { next: { rootDir: "apps/storefront/" } } },
+  { settings: { next: { rootDir: ["apps/storefront/", "apps/admin/"] } } },
   globalIgnores(["**/.next/**", "**/dist/**", "**/next-env.d.ts"]),
 ]);

@@ -6,6 +6,7 @@ export default defineConfig({
       "**/.next/**",
       "tests/browser/**",
       "tests/development/**",
+      "tests/admin/**",
     ],
   },
 });

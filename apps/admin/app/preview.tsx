@@ -12,6 +12,9 @@ import {
   Plus,
   Search,
 } from "lucide-react";
+import { CatalogTransfer } from "./catalog-transfer";
+import { Inventory } from "./inventory";
+import { ProductMedia } from "./product-media";
 import { ProductDetails } from "./product-details";
 import { SizeGuides } from "./size-guides";
 import type {
@@ -96,6 +99,8 @@ const sections = [
   ["İcmal", LayoutDashboard],
   ["Məhsullar", Package],
   ["Ölçü cədvəlləri", FileText],
+  ["Stok", Package],
+  ["İdxal / ixrac", FileText],
   ["Sifarişlər", ShoppingBag],
   ["Müştərilər", Users],
   ["Bonus", Wallet],
@@ -374,6 +379,28 @@ export function AdminPreview() {
                   }
                 />
               ))}
+          {tab === "Məhsullar" &&
+            selectedProduct &&
+            state.products
+              .filter((p) => p.id === selectedProduct)
+              .map((product) => (
+                <ProductMedia
+                  key={product.id}
+                  product={product}
+                  canEdit={canEdit}
+                  onSave={(updated) =>
+                    save(
+                      {
+                        ...state,
+                        products: state.products.map((p) =>
+                          p.id === updated.id ? updated : p,
+                        ),
+                      },
+                      "Məhsul şəkilləri redaktə edildi",
+                    )
+                  }
+                />
+              ))}
           {tab === "Ölçü cədvəlləri" && (
             <SizeGuides
               guides={state.guides}
@@ -388,6 +415,35 @@ export function AdminPreview() {
                     ],
                   },
                   "Ölçü cədvəli qaralaması saxlanıldı",
+                )
+              }
+            />
+          )}
+          {tab === "Stok" && (
+            <Inventory
+              products={state.products}
+              canEdit={role === "admin"}
+              onSave={(product) =>
+                save(
+                  {
+                    ...state,
+                    products: state.products.map((p) =>
+                      p.id === product.id ? product : p,
+                    ),
+                  },
+                  "Stok qaralaması saxlanıldı",
+                )
+              }
+            />
+          )}
+          {tab === "İdxal / ixrac" && (
+            <CatalogTransfer
+              products={state.products}
+              canEdit={canEdit}
+              onSave={(products) =>
+                save(
+                  { ...state, products },
+                  "CSV kataloq qaralamaları idxal edildi",
                 )
               }
             />

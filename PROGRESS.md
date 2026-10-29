@@ -90,3 +90,11 @@ Added editable existing product drafts, color/size variants with EAN-13 checksum
 
 Verification: lint, all app type-checks and 22 unit tests passed; storefront/admin production builds passed; 4 admin browser tests passed across 390px/1440px, covering invalid inputs, edit persistence after reload, role restrictions and no viewport overflow. Mobile size-editor screenshot reviewed. Static GitHub Pages export/smoke verification follows before push. Remaining frontend work includes media/import-export, inventory and deeper operational admin modules; real integrations remain deferred.
 Static Pages export and smoke test passed after the editor changes; storefront/cart/checkout/OTP/admin navigation still work under the repository base path.
+
+## Continued Phase 5 frontend — catalog transfer, media and stock
+Added CSV import validation/preview and repeatable code-based updates, basic-field export, local image preview upload/description/primary selection/removal, and per-variant stock draft editing. Unknown quantities remain unknown; all records stay UNVERIFIED/DRAFT. No changes to the approved application stack or future database architecture. Real DB/payment/POS/media-storage integrations remain deferred as requested. CSV export is deliberately a basic-field transfer, not a full backup or completed migration pipeline.
+
+Validation: dependencies installed with scripts disabled; lint, all app type-checks, 25 unit tests, storefront/admin production builds and 6 admin browser tests passed. Browser tests cover CSV import, variant creation, image persistence, invalid/zero stock and role-view restrictions at 390px/1440px. Mobile inventory and desktop media screens visually reviewed. Pages build/smoke verification recorded below when complete.
+
+Run: `npm run dev:admin` → port 3002; inspect İdxal / ixrac, Məhsullar → Redaktə et → Məhsul şəkilləri, and Stok. Known limits: browser-only storage/quota, no original media upload, no real authorization or authoritative inventory. Phase 5 remains in progress: operational order/customer/loyalty consoles and reporting are still pending. Backend-only acceptance gates remain deferred, not passed.
+Static Pages build and smoke passed: repository base path, storefront/cart/guest checkout/OTP, admin draft persistence, refresh and query filters; no browser JS errors.

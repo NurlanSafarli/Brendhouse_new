@@ -5,3 +5,4 @@ export type Publication = "DRAFT" | "PUBLISHED";
 export type Money = { amount: number; currency: "AZN" };
 export * from "./catalog";
 export * from "./pricing";
+export * from "./checkout";

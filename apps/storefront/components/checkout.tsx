@@ -1,12 +1,42 @@
 "use client";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { httpCheckout } from "../lib/commerce/http-checkout";
+import { previewCheckout } from "../lib/commerce/preview-checkout";
+import type { CheckoutOutcome } from "@brendhouse/contracts";
 import Link from "next/link";
-import { useCart } from "../lib/cart";
+import { useCart, saveCart } from "../lib/cart";
 import { OrderSummary } from "./cart-view";
-export function Checkout() {
+export function Checkout({ preview = false }: { preview?: boolean }) {
+  const [scenario, setScenario] = useState<
+    "success" | "declined" | "unavailable"
+  >("success");
+  const [outcome, setOutcome] = useState<CheckoutOutcome | null>(null);
+  const requestKey = useRef<string | null>(null);
   const lines = useCart();
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  if (outcome?.kind === "preview" || outcome?.kind === "accepted")
+    return (
+      <div className="catalog-state">
+        <p className="eyebrow">
+          {outcome.kind === "preview" ? "TEST AXINI" : "BREND HOUSE"}
+        </p>
+        <h1>
+          {outcome.kind === "preview"
+            ? "Sifariş axını tamamlandı"
+            : "Sifarişiniz qəbul edildi"}
+        </h1>
+        <p>
+          {outcome.kind === "preview"
+            ? "Bu, frontend yoxlamasıdır. Real sifariş yaradılmayıb və ödəniş tutulmayıb."
+            : `Sifariş nömrəsi: ${outcome.orderNumber}`}
+        </p>
+        {outcome.kind === "preview" && <p>{outcome.reference}</p>}
+        <Link href="/bolme/qadin" className="button button-primary">
+          Alış-verişə davam et →
+        </Link>
+      </div>
+    );
   if (lines === null) return <p role="status">Yüklənir…</p>;
   if (!lines.length)
     return (
@@ -33,30 +63,36 @@ export function Checkout() {
             setBusy(true);
             setError("");
             try {
-              const response = await fetch("/api/checkout", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  name: data.get("name"),
-                  phone,
-                  address: data.get("address"),
-                  delivery: "baku-courier",
-                  payment: "cash-on-delivery",
-                  lines: lines.map((l) => ({
-                    variantId: l.variantId,
-                    quantity: l.quantity,
-                  })),
-                }),
+              requestKey.current ??= crypto.randomUUID();
+              const result = await (
+                preview ? previewCheckout(scenario) : httpCheckout
+              ).submit({
+                name: String(data.get("name")).trim(),
+                phone,
+                address: String(data.get("address")).trim(),
+                delivery: "baku-courier",
+                payment:
+                  data.get("payment") === "card" ? "card" : "cash-on-delivery",
+                lines: lines.map((l) => ({
+                  variantId: l.variantId,
+                  quantity: l.quantity,
+                })),
+                idempotencyKey: requestKey.current,
               });
-              if (!response.ok) {
+              if (result.kind === "error") {
                 setError(
-                  "Sifariş qəbulu hazırda əlçatan deyil. Səbətiniz saxlanılıb; heç bir ödəniş tutulmayıb.",
+                  result.code === "PAYMENT_DECLINED"
+                    ? "Test ödənişi qəbul edilmədi. Başqa ödəniş üsulu seçin."
+                    : "Sifariş qəbulu hazırda əlçatan deyil. Səbətiniz saxlanılıb; heç bir ödəniş tutulmayıb.",
                 );
                 return;
               }
-              setError(
-                "Sifariş təsdiqi alınmadı. Dəstək xidməti ilə əlaqə saxlayın.",
-              );
+              setOutcome(result);
+              try {
+                saveCart([]);
+              } catch {
+                /* Completion still displays if local storage is unavailable. */
+              }
             } catch {
               setError("Bağlantı alınmadı. Səbətiniz saxlanılıb.");
             } finally {
@@ -109,10 +145,38 @@ export function Checkout() {
               Qapıda nağd ödəniş
             </label>
             <label className="radio-option">
-              <input type="radio" name="payment" disabled value="card" />
-              Kartla ödəniş — hazırda əlçatan deyil
+              <input
+                type="radio"
+                name="payment"
+                disabled={!preview}
+                value="card"
+              />
+              {preview
+                ? "Kartla ödəniş (test)"
+                : "Kartla ödəniş — hazırda əlçatan deyil"}
             </label>
           </section>
+          {preview && (
+            <section className="panel">
+              <h2>Frontend yoxlaması</h2>
+              <p className="muted">
+                Real sifariş, bank sorğusu və SMS göndərilmir.
+              </p>
+              <label>
+                Test nəticəsi
+                <select
+                  value={scenario}
+                  onChange={(e) =>
+                    setScenario(e.target.value as typeof scenario)
+                  }
+                >
+                  <option value="success">Tamamlanan axın</option>
+                  <option value="declined">Ödəniş xətası</option>
+                  <option value="unavailable">Xidmət əlçatan deyil</option>
+                </select>
+              </label>
+            </section>
+          )}
           {lines.some((l) => l.developmentOnly) && (
             <p className="unverified-note">
               Səbətdə təsdiqlənməmiş məhsullar var. Onlarla real sifariş

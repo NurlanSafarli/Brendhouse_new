@@ -81,10 +81,10 @@ try {
   await page
     .getByRole("button", { name: "Qaralamanı saxla", exact: true })
     .click();
-  await page.getByRole("cell", { name: "PAGES-TEST" }).waitFor();
+  await page.getByRole("cell", { name: "PAGES-TEST", exact: true }).waitFor();
   await page.reload();
   await page.getByRole("button", { name: "Məhsullar", exact: true }).click();
-  await page.getByRole("cell", { name: "PAGES-TEST" }).waitFor();
+  await page.getByRole("cell", { name: "PAGES-TEST", exact: true }).waitFor();
   assert.deepEqual(errors, []);
   assert.ok(
     await page.evaluate(

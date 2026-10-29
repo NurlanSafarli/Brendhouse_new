@@ -21,6 +21,9 @@ export const sections = [
 export function ShopHeader() {
   return (
     <>
+      <Link href="/bonus-karti" className="bonus-nav-link">
+        Bonus kartı · İstəyə bağlı
+      </Link>
       <header className="shop-header">
         <div className="wrap shop-top">
           <Link href="/" className="wordmark">
@@ -88,6 +91,9 @@ export function ShopFooter() {
         </div>
         <div>
           <h3>Əlaqə</h3>
+          <Link href="/haqqimizda">Haqqımızda</Link>
+          <Link href="/faq">Tez-tez verilən suallar</Link>
+          <Link href="/catdirilma-qaytarma">Çatdırılma və qaytarma</Link>
           <a href="tel:+994503044811">(050) 304 48 11</a>
           <a href="mailto:info@brendhouse.az">info@brendhouse.az</a>
           <a href="https://wa.me/994503044811">WhatsApp</a>

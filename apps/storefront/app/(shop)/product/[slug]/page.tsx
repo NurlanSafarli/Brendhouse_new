@@ -1,3 +1,4 @@
+import { isPublicProduct } from "@brendhouse/contracts";
 import { notFound } from "next/navigation";
 import { getProduct } from "../../../../lib/catalog";
 import { ProductDetail } from "../../../../components/product-detail";
@@ -15,7 +16,7 @@ export async function generateMetadata({
         ? `${result.data.title} | Brend House`
         : "Məhsul | Brend House",
     alternates: { canonical: `/product/${slug}/` },
-    ...(result.status !== "ready"
+    ...(result.status !== "ready" || !isPublicProduct(result.data)
       ? { robots: { index: false, follow: true } }
       : {}),
   };
